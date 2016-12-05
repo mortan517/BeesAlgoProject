@@ -43,6 +43,7 @@ namespace mmwd
         public int SolvingMethod() //solve and return results //todo
         {
             return people + money + time + numbersOfIterations + numbersOfScouts + numbersOfEliteAreas;
+            //testing commits
         }
     }
 }
