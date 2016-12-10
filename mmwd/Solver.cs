@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+//test
 namespace mmwd
 {
     internal class Solver
