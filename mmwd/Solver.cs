@@ -91,24 +91,75 @@ namespace mmwd
             public Bee(Solver parent, Bee center, int neighbourhood_size)   //bee in elite or selected area constructor
             {
                 this.parent = parent;
-                //generating random values of variables from neighbourhood
-                x_gosci = parent.rand.Next(center.x_gosci - neighbourhood_size, center.x_gosci + neighbourhood_size + 1);
-                x_ciast_o = parent.rand.Next(center.x_ciast_o - neighbourhood_size, center.x_ciast_o + neighbourhood_size + 1);
-                x_ciast_d = parent.rand.Next(center.x_ciast_d - neighbourhood_size, center.x_ciast_d + neighbourhood_size + 1);
-                x_ciast_u = parent.rand.Next(center.x_ciast_u - neighbourhood_size, center.x_ciast_u + neighbourhood_size + 1);
-                x_napojow_o = parent.rand.Next(center.x_napojow_o - neighbourhood_size, center.x_napojow_o + neighbourhood_size + 1);
-                x_napojow_d = parent.rand.Next(center.x_napojow_d - neighbourhood_size, center.x_napojow_d + neighbourhood_size + 1);
-                x_ozdob_o = parent.rand.Next(center.x_ozdob_o- neighbourhood_size, center.x_ozdob_o + neighbourhood_size + 1);
-                x_ozdob_d = parent.rand.Next(center.x_ozdob_d - neighbourhood_size, center.x_ozdob_d + neighbourhood_size + 1);
-                x_ozdob_z = parent.rand.Next(center.x_ozdob_z - neighbourhood_size, center.x_ozdob_z + neighbourhood_size + 1);
-                x_potraw_z = parent.rand.Next(center.x_potraw_z - neighbourhood_size, center.x_potraw_z + neighbourhood_size + 1);
-                x_potraw_d = parent.rand.Next(center.x_potraw_d - neighbourhood_size, center.x_potraw_d + neighbourhood_size + 1);
+                //generating random values (but not lesser than 0 and not senselessly big) of variables from neighbourhood
+                x_gosci = parent.rand.Next((center.x_gosci - neighbourhood_size >= 0) ? (center.x_gosci - neighbourhood_size) : 0, (center.x_gosci + neighbourhood_size + 1 < parent.room + 1) ? (center.x_gosci + neighbourhood_size + 1) : (parent.room + 1));
+                x_ciast_o = parent.rand.Next((center.x_ciast_o - neighbourhood_size >= 0) ? (center.x_ciast_o - neighbourhood_size) : 0, (center.x_ciast_o + neighbourhood_size + 1 < 6) ? (center.x_ciast_o + neighbourhood_size + 1) : 6);
+                x_ciast_d = parent.rand.Next((center.x_ciast_d - neighbourhood_size >= 0) ? (center.x_ciast_d - neighbourhood_size) : 0, (center.x_ciast_d + neighbourhood_size + 1 < 6) ? (center.x_ciast_d + neighbourhood_size + 1) : 6);
+                x_ciast_u = parent.rand.Next((center.x_ciast_u - neighbourhood_size >= 0) ? (center.x_ciast_u - neighbourhood_size) : 0, (center.x_ciast_u + neighbourhood_size + 1 < 6) ? (center.x_ciast_u + neighbourhood_size + 1) : 6);
+                x_napojow_o = parent.rand.Next((center.x_napojow_o - neighbourhood_size >= 0) ? (center.x_napojow_o - neighbourhood_size) : 0, (center.x_napojow_o + neighbourhood_size + 1 < 6) ? (center.x_napojow_o + neighbourhood_size + 1) : 6);
+                x_napojow_d = parent.rand.Next((center.x_napojow_d - neighbourhood_size >= 0) ? (center.x_napojow_d - neighbourhood_size) : 0, (center.x_napojow_d + neighbourhood_size + 1 < 6) ? (center.x_napojow_d + neighbourhood_size + 1) : 6);
+                x_ozdob_o = parent.rand.Next((center.x_ozdob_o - neighbourhood_size >= 0) ? (center.x_ozdob_o - neighbourhood_size) : 0, (center.x_ozdob_o + neighbourhood_size + 1 < 6) ? (center.x_ozdob_o + neighbourhood_size + 1) : 6);
+                x_ozdob_d = parent.rand.Next((center.x_ozdob_d - neighbourhood_size >= 0) ? (center.x_ozdob_d - neighbourhood_size) : 0, (center.x_ozdob_d + neighbourhood_size + 1 < 6) ? (center.x_ozdob_d + neighbourhood_size + 1) : 6);
+                x_ozdob_z = parent.rand.Next((center.x_ozdob_z - neighbourhood_size >= 0) ? (center.x_ozdob_z - neighbourhood_size) : 0, (center.x_ozdob_z + neighbourhood_size + 1 < 6) ? (center.x_ozdob_z + neighbourhood_size + 1) : 6);
+                x_potraw_z = parent.rand.Next((center.x_potraw_z - neighbourhood_size >= 0) ? (center.x_potraw_z - neighbourhood_size) : 0, (center.x_potraw_z + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
+                x_potraw_d = parent.rand.Next((center.x_potraw_d - neighbourhood_size >= 0) ? (center.x_potraw_d - neighbourhood_size) : 0, (center.x_potraw_d + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
                 value = 0; //just to initialize
+            }
+
+            public bool check_if_allowed() //checks if solution is allowed (are constraints satisfied? - 1-yes, 0-no)
+            {
+                //limited space satisfied during generating solution
+                //limited time:
+                if ((5 * (ifn_0(x_ciast_d) + ifn_0(x_napojow_d) + ifn_0(x_ozdob_d) + ifn_0(x_potraw_d)) + 40 * (ifn_0(x_ciast_o) + ifn_0(x_napojow_o) + ifn_0(x_ozdob_o)) + 20 * (ifn_0(x_ciast_u) + ifn_0(x_ozdob_z) + ifn_0(x_potraw_z)) + 70 * x_ciast_u + 90 * x_potraw_z + 50 * x_ozdob_z) > parent.time)
+                    return false;
+                //limited amount of money:
+                else if ((15 * (ifn_0(x_ciast_d) + ifn_0(x_napojow_d) + ifn_0(x_ozdob_d) + ifn_0(x_potraw_d)) + x_gosci * (4 * (x_ciast_o + x_ciast_d) + (x_napojow_o + x_napojow_d) + 15 * x_potraw_d + x_ciast_u + 7 * x_potraw_z) + 40 * (x_ozdob_o + x_ozdob_d) + 15 * x_ozdob_z) > parent.money)
+                    return false;
+                else
+                    return true;
+            }
+
+            private int ifn_0(int number) //checks if number is not a zero: 1 - is not a zero, 0 - is a zero
+            {
+                if (number != 0)
+                    return 1;
+                else
+                    return 0;
             }
 
             public int evaluate() //method evaluating objective function (value)
             {
-                value = x_gosci * (space_bonus)
+                value = x_gosci * (parent.space_bonus*f_gosci(x_gosci) + 2*parent.cakes*f_i(x_ciast_d + x_ciast_o + x_ciast_u) + parent.beverages*f_i(x_napojow_d + x_napojow_o) + parent.room*f_i(x_ozdob_d + x_ozdob_o + x_ozdob_z) + 3*parent.food*f_i(x_potraw_d + x_potraw_z));
+                return value;
+            }
+
+            private int f_gosci(int x_gosci) //return 1 if space bonus should be given
+            {
+                if (x_gosci < 0.2 * parent.people)
+                    return 0;
+                else if (x_gosci > 0.8 * parent.people)
+                    return 0;
+                else
+                    return 1;
+            }
+
+            private int f_i(int number) //evaluates happiness from variety
+            {
+                switch(number)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return 5;
+                    case 2:
+                        return 9;
+                    case 3:
+                        return 12;
+                    case 4:
+                        return 14;
+                    default:
+                        return 15;
+                }
             }
         }
 
