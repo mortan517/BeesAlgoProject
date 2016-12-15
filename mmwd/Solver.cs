@@ -118,7 +118,7 @@ namespace mmwd
                 else
                     return true;
             }
-
+            
             private int ifn_0(int number) //checks if number is not a zero: 1 - is not a zero, 0 - is a zero
             {
                 if (number != 0)
@@ -163,10 +163,29 @@ namespace mmwd
             }
         }
 
-        public int SolvingMethod() //solve and return results //todo
+        public int SolvingMethod() //solve and return results //todo //it's fucked
         {
-            return people + money + time + numbersOfIterations + numbersOfScouts + numbersOfEliteAreas;
-            //testing commits
+            List<Bee> beeVector = new List<Bee>();
+            for(int i=0; i<50; i++)
+            {
+                beeVector.Add(new Bee(this));
+            }
+
+            int maxIndex = 0;
+
+            foreach(var i in beeVector)
+            {
+                if (i.check_if_allowed())
+                {
+                    if (i.evaluate() > maxIndex)
+                    {
+                        maxIndex = i.evaluate();
+                        System.Console.WriteLine(i);
+                    }
+                }  
+            }
+
+            return maxIndex;
         }
     }
 }
