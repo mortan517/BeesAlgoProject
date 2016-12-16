@@ -166,9 +166,12 @@ namespace mmwd
         public int SolvingMethod() //solve and return results //todo //it's fucked
         {
             List<Bee> beeVector = new List<Bee>();
+            beeVector.Capacity = 50;
+
             for(int i=0; i<50; i++)
             {
                 beeVector.Add(new Bee(this));
+                //
             }
 
             int maxIndex = 0;
@@ -180,7 +183,7 @@ namespace mmwd
                     if (i.evaluate() > maxIndex)
                     {
                         maxIndex = i.evaluate();
-                        System.Console.WriteLine(i);
+                        //System.Console.WriteLine(i);
                     }
                 }  
             }
