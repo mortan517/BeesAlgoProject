@@ -52,16 +52,18 @@ namespace mmwd
             beesInEliteAreas = programmerParametersList[4];
             beesInSelectedAreas = programmerParametersList[5];
             iterationsWithoutImprovement = programmerParametersList[6];
-            sizeOfNeighbourhood = 2;    //to do: take this parameter from programmer interface
+            sizeOfNeighbourhood = 1;    //to do: take this parameter from programmer interface
 
             rand = new Random();
 
             //based on mathematical model:
-            limit_ciast_u = time / 70;
-            limit_potraw_z = time / 90;
-            limit_ozdob_z = (time / 50 < money / 15) ? time / 50 : money / 15;
-            limit_ozdob_o = money / 40;
-            limit_ozdob_d = money / 40;
+            limit_ciast_u = (time / 70 < 6) ? (time / 70) : 6;
+            limit_potraw_z = (time / 90 < 6) ? (time / 90) : 6;
+            limit_ozdob_z = (time / 50 < money / 15) ? (time / 50) : (money / 15);
+            if (limit_ozdob_z > 6)
+                limit_ozdob_z = 6;
+            limit_ozdob_o = (money / 40 < 6) ? (money / 40) : 6;
+            limit_ozdob_d = (money / 40 < 6) ? (money / 40) : 6;
         }
 
         class Bee //class representing a solution
@@ -123,7 +125,10 @@ namespace mmwd
                 x_ozdob_d = parent.rand.Next((center.x_ozdob_d - neighbourhood_size >= 0) ? (center.x_ozdob_d - neighbourhood_size) : 0, (center.x_ozdob_d + neighbourhood_size + 1 < parent.limit_ozdob_d + 1) ? (center.x_ozdob_d + neighbourhood_size + 1) : (parent.limit_ozdob_d + 1));
                 x_ozdob_z = parent.rand.Next((center.x_ozdob_z - neighbourhood_size >= 0) ? (center.x_ozdob_z - neighbourhood_size) : 0, (center.x_ozdob_z + neighbourhood_size + 1 < parent.limit_ozdob_z + 1) ? (center.x_ozdob_z + neighbourhood_size + 1) : (parent.limit_ozdob_z + 1));
                 x_potraw_z = parent.rand.Next((center.x_potraw_z - neighbourhood_size >= 0) ? (center.x_potraw_z - neighbourhood_size) : 0, (center.x_potraw_z + neighbourhood_size + 1 < parent.limit_potraw_z + 1) ? (center.x_potraw_z + neighbourhood_size + 1) : (parent.limit_potraw_z + 1));
-                x_potraw_d = parent.rand.Next((center.x_potraw_d - neighbourhood_size >= 0) ? (center.x_potraw_d - neighbourhood_size) : 0, (center.x_potraw_d + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
+                //Console.Out.WriteLine(center.x_potraw_d - neighbourhood_size);
+                //Console.Out.WriteLine(center.x_potraw_d + neighbourhood_size + 1);
+                //Console.Out.WriteLine();
+                x_potraw_d = parent.rand.Next((center.x_potraw_d - neighbourhood_size >= 0) ? (center.x_potraw_d - neighbourhood_size) : 0, (center.x_potraw_d + neighbourhood_size + 1 < 6) ? (center.x_potraw_d + neighbourhood_size + 1) : 6);
                 value = -1; //just to initialize
             }
 
@@ -234,6 +239,8 @@ namespace mmwd
             Bee tempBee = new Bee(this); //temporary bee will be useful in following steps
             Bee areaBee = new mmwd.Solver.Bee(this);
 
+            int nowWithoutImprovement = 0;  //to count iterations without improvement
+
             beeVector = beeVector.OrderByDescending(b => b.value).ToList();
 
             /*
@@ -258,6 +265,11 @@ namespace mmwd
 
             for (int algorithmIt = 1; algorithmIt <= numberOfIterations; algorithmIt++) //1 of 2 alternative STOP criteria -- max number of iterations
             {
+                if (nowWithoutImprovement > iterationsWithoutImprovement) //second STOP criteria -- max number of iterations without improvement
+                    break;
+
+                int best_value = beeVector[0].value; //save best value as for now
+
                 /////operations on bees in elite areas:
                 for(int e = 0; e < numberOfEliteAreas; e++)
                 {
@@ -289,7 +301,7 @@ namespace mmwd
                     }
                     beeVector[e] = areaBee; //save best bee in the area
                 }
-
+                
 
                 /////operations on bees in selected areas
                 for(int s = numberOfEliteAreas; s < (numberOfEliteAreas + numberOfSelectedAreas); s++)
@@ -322,7 +334,7 @@ namespace mmwd
                     }
                     beeVector[s] = areaBee; //save best bee in the area
                 }
-
+                
 
                 /////generating new scout bees     
                 try
@@ -350,18 +362,38 @@ namespace mmwd
                 }
 
 
+                /////ending current iteration
+                beeVector = beeVector.OrderByDescending(b => b.value).ToList();
+                if (best_value == beeVector[0].value)
+                    nowWithoutImprovement += 1;
+                else
+                    nowWithoutImprovement = 0;
 
 
-
-
+                foreach (Bee b in beeVector)
+                {
+                    Console.Out.Write(b.value + "  ");
+                    Console.Out.Write(b.x_gosci + "  ");
+                    Console.Out.Write(b.x_ciast_o + "  ");
+                    Console.Out.Write(b.x_ciast_d + "  ");
+                    Console.Out.Write(b.x_ciast_u + "  ");
+                    Console.Out.Write(b.x_napojow_o + "  ");
+                    Console.Out.Write(b.x_napojow_d + "  ");
+                    Console.Out.Write(b.x_ozdob_o + "  ");
+                    Console.Out.Write(b.x_ozdob_z + "  ");
+                    Console.Out.Write(b.x_ozdob_d + "  ");
+                    Console.Out.Write(b.x_potraw_z + "  ");
+                    Console.Out.Write(b.x_potraw_d + "\n");
+                }
+                Console.Out.WriteLine();
+                Console.WriteLine(beeVector[0].value);
+                Console.Out.WriteLine();
+                Console.Out.WriteLine();
+                Console.Out.WriteLine();
+                Console.Out.WriteLine();
             }
 
-
-
-
-
-
-            return 0;
+            return beeVector[0].value;
         }
     }
 
