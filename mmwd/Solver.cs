@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 namespace mmwd
-{ 
+{
     internal class Solver
     {
         int people; // how many people do u want to accomodate
@@ -15,14 +15,15 @@ namespace mmwd
         int beverages; // importance of beverages (1-10)
         int space_bonus; // importance of appropriate number of guests
 
-        int numbersOfIterations;
-        int numbersOfScouts;
-        int numbersOfEliteAreas;
-        int numbersOfSelectedAreas;
+        int numberOfIterations;
+        int numberOfScouts;
+        int numberOfEliteAreas;
+        int numberOfSelectedAreas;
         int beesInEliteAreas;
         int beesInSelectedAreas;
         int iterationsWithoutImprovement;
 
+        const int max_iterations_multiplier = 1000; //max number of iterations while generating allowed bee = (bees to generate) * multiplier
         Random rand; //random numbers generator
 
         public Solver(List<int> userParametersList, List<int> programmerParametersList) //constructor
@@ -36,10 +37,10 @@ namespace mmwd
             beverages = userParametersList[6];
             space_bonus = (room + cakes + food + beverages); //definition of space_bonus parameter
 
-            numbersOfIterations = programmerParametersList[0];
-            numbersOfScouts = programmerParametersList[1];
-            numbersOfEliteAreas = programmerParametersList[2];
-            numbersOfSelectedAreas = programmerParametersList[3];
+            numberOfIterations = programmerParametersList[0];
+            numberOfScouts = programmerParametersList[1];
+            numberOfEliteAreas = programmerParametersList[2];
+            numberOfSelectedAreas = programmerParametersList[3];
             beesInEliteAreas = programmerParametersList[4];
             beesInSelectedAreas = programmerParametersList[5];
             iterationsWithoutImprovement = programmerParametersList[6];
@@ -79,7 +80,7 @@ namespace mmwd
             {
                 //generating random values of variables
                 //we use knowledge about model to limit space from which numbers are generated
-                x_gosci = parent.rand.Next(0, parent.room + 1);
+                x_gosci = parent.rand.Next(0, parent.people + 1);
                 x_ciast_o = parent.rand.Next(0, 6);
                 x_ciast_d = parent.rand.Next(0, 6);
                 x_ciast_u = parent.rand.Next(0, 6);
@@ -96,7 +97,7 @@ namespace mmwd
             public void generate(Bee center, int neighbourhood_size)    //generating a random bee in elite or selected areas
             {
                 //generating random values (but not lesser than 0 and not senselessly big) of variables from neighbourhood
-                x_gosci = parent.rand.Next((center.x_gosci - neighbourhood_size >= 0) ? (center.x_gosci - neighbourhood_size) : 0, (center.x_gosci + neighbourhood_size + 1 < parent.room + 1) ? (center.x_gosci + neighbourhood_size + 1) : (parent.room + 1));
+                x_gosci = parent.rand.Next((center.x_gosci - neighbourhood_size >= 0) ? (center.x_gosci - neighbourhood_size) : 0, (center.x_gosci + neighbourhood_size + 1 < parent.people + 1) ? (center.x_gosci + neighbourhood_size + 1) : (parent.people + 1));
                 x_ciast_o = parent.rand.Next((center.x_ciast_o - neighbourhood_size >= 0) ? (center.x_ciast_o - neighbourhood_size) : 0, (center.x_ciast_o + neighbourhood_size + 1 < 6) ? (center.x_ciast_o + neighbourhood_size + 1) : 6);
                 x_ciast_d = parent.rand.Next((center.x_ciast_d - neighbourhood_size >= 0) ? (center.x_ciast_d - neighbourhood_size) : 0, (center.x_ciast_d + neighbourhood_size + 1 < 6) ? (center.x_ciast_d + neighbourhood_size + 1) : 6);
                 x_ciast_u = parent.rand.Next((center.x_ciast_u - neighbourhood_size >= 0) ? (center.x_ciast_u - neighbourhood_size) : 0, (center.x_ciast_u + neighbourhood_size + 1 < 6) ? (center.x_ciast_u + neighbourhood_size + 1) : 6);
@@ -122,7 +123,7 @@ namespace mmwd
                 else
                     return true;
             }
-            
+
             private int ifn_0(int number) //checks if number is not a zero: 1 - is not a zero, 0 - is a zero
             {
                 if (number != 0)
@@ -133,7 +134,7 @@ namespace mmwd
 
             public int evaluate() //method evaluating objective function (value)
             {
-                value = x_gosci * (parent.space_bonus*f_gosci(x_gosci) + 2*parent.cakes*f_i(x_ciast_d + x_ciast_o + x_ciast_u) + parent.beverages*f_i(x_napojow_d + x_napojow_o) + parent.room*f_i(x_ozdob_d + x_ozdob_o + x_ozdob_z) + 3*parent.food*f_i(x_potraw_d + x_potraw_z));
+                value = x_gosci * (parent.space_bonus * f_gosci(x_gosci) + 2 * parent.cakes * f_i(x_ciast_d + x_ciast_o + x_ciast_u) + parent.beverages * f_i(x_napojow_d + x_napojow_o) + parent.room * f_i(x_ozdob_d + x_ozdob_o + x_ozdob_z) + 3 * parent.food * f_i(x_potraw_d + x_potraw_z));
                 return value;
             }
 
@@ -149,7 +150,7 @@ namespace mmwd
 
             private int f_i(int number) //evaluates happiness from variety
             {
-                switch(number)
+                switch (number)
                 {
                     case 0:
                         return 0;
@@ -167,20 +168,77 @@ namespace mmwd
             }
         }
 
-        public int SolvingMethod() //solve and return results //todo //it's fucked
+        public int SolvingMethod() //solve and return results
         {
-            /*
-            List<Bee> beeVector = new List<Bee>();
-            beeVector.Capacity = 50;
-            
-            for(int i=0; i<50; i++)
-            {
-                beeVector.Add(new Bee(this));
-                //
-            }
-            
-            int maxIndex = 10;
+            /////////////////////// step 0  - initialization/////////////////////////////////
 
+            //generating n_elite_areas + n_selected_areas + n_scouts
+            List<Bee> beeVector = new List<Bee>();
+            beeVector.Capacity = numberOfEliteAreas + numberOfSelectedAreas + numberOfScouts;
+            try
+            {
+                int iterations_0 = 0; //number of iterations while trying to generate allowed beeVector
+                for (int i = 0; i < (numberOfEliteAreas + numberOfSelectedAreas + numberOfScouts); i++)
+                {
+                    beeVector.Add(new Bee(this));
+                    while (!(beeVector[i].check_if_allowed()))  //if not allowed generate till allowed
+                    {
+                        beeVector[i].generate();
+                        iterations_0 += 1;
+                        if (iterations_0 > (max_iterations_multiplier * (numberOfEliteAreas + numberOfSelectedAreas + numberOfScouts)))
+                        {
+                            throw new UnableToGenerateAllowed("Unable to generate bees satisfying constraints");
+                        }
+                    }
+                    beeVector[i].evaluate();
+                    /*
+                    Console.Out.Write(i + "  ");
+                    Console.Out.Write(iterations_0 + "  ");
+                    Console.Out.Write(beeVector[i].value + "  ");
+                    Console.Out.Write(beeVector[i].x_gosci + "  ");
+                    Console.Out.Write(beeVector[i].x_ciast_o + "  ");
+                    Console.Out.Write(beeVector[i].x_ciast_d + "  ");
+                    Console.Out.Write(beeVector[i].x_ciast_u + "  ");
+                    Console.Out.Write(beeVector[i].x_napojow_o + "  ");
+                    Console.Out.Write(beeVector[i].x_napojow_d + "  ");
+                    Console.Out.Write(beeVector[i].x_ozdob_o + "  ");
+                    Console.Out.Write(beeVector[i].x_ozdob_z + "  ");
+                    Console.Out.Write(beeVector[i].x_ozdob_d + "  ");
+                    Console.Out.Write(beeVector[i].x_potraw_z + "  ");
+                    Console.Out.Write(beeVector[i].x_potraw_d + "\n");
+                    */
+                }
+            }
+            catch (UnableToGenerateAllowed ex)
+            {
+                Console.Out.WriteLine("Unable to generate bees satisfying constraints");
+                return -1;
+            }
+
+            Bee tempBee = new Bee(this); //temporary bee will be useful in following steps
+
+            int algorithmIt = 1;   //start first step of the algorithm
+
+            /////////////////////////////// step k -- iteration of the algorithm /////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*
             foreach(var i in beeVector)
             {
                 if (i.check_if_allowed())
@@ -193,7 +251,7 @@ namespace mmwd
                 }  
             }
             */
-
+            /*
             int k_dozwolonych = 0;
             int k_iteracji = 0;
 
@@ -205,7 +263,6 @@ namespace mmwd
                     k_dozwolonych += 1;
                 temp.evaluate();
                 Console.Out.Write(k_iteracji + "  ");
-                Console.Out.Write(k_dozwolonych + "  ");
                 Console.Out.Write(temp.value + "  ");
                 Console.Out.Write(temp.x_gosci + "  ");
                 Console.Out.Write(temp.x_ciast_o + "  ");
@@ -219,7 +276,25 @@ namespace mmwd
                 Console.Out.Write(temp.x_potraw_z + "  ");
                 Console.Out.Write(temp.x_potraw_d + "\n");
             }
-            return k_iteracji;
+            */
+
+            return 0;
         }
     }
+
+/////////////// exceptions
+
+    public class UnableToGenerateAllowed : SystemException
+    {
+        public UnableToGenerateAllowed() : base() { }
+        public UnableToGenerateAllowed(string message) : base(message) { }
+        public UnableToGenerateAllowed(string message, System.Exception inner) : base(message, inner) { }
+        protected UnableToGenerateAllowed(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        { }
+    }
+
 }
+
+
+
