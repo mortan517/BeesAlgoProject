@@ -22,6 +22,7 @@ namespace mmwd
         int beesInEliteAreas;
         int beesInSelectedAreas;
         int iterationsWithoutImprovement;
+        int sizeOfNeighbourhood;
 
         const int max_iterations_multiplier = 1000; //max number of iterations while generating allowed bee = (bees to generate) * multiplier
         Random rand; //random numbers generator
@@ -51,6 +52,7 @@ namespace mmwd
             beesInEliteAreas = programmerParametersList[4];
             beesInSelectedAreas = programmerParametersList[5];
             iterationsWithoutImprovement = programmerParametersList[6];
+            sizeOfNeighbourhood = 2;    //to do: take this parameter from programmer interface
 
             rand = new Random();
 
@@ -234,6 +236,7 @@ namespace mmwd
 
             beeVector = beeVector.OrderByDescending(b => b.value).ToList();
 
+            /*
             foreach(Bee b in beeVector)
             {
                 Console.Out.Write(b.value + "  ");
@@ -249,67 +252,58 @@ namespace mmwd
                 Console.Out.Write(b.x_potraw_z + "  ");
                 Console.Out.Write(b.x_potraw_d + "\n");
             }
-
-            int algorithmIt = 1;   //start first step of the algorithm
+            */
 
             /////////////////////////////// step k -- iteration of the algorithm /////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            /*
-            foreach(var i in beeVector)
+            for (int algorithmIt = 1; algorithmIt <= numberOfIterations; algorithmIt++) //1 of 2 alternative STOP criteria -- max number of iterations
             {
-                if (i.check_if_allowed())
+                /////operations on bees in elite areas:
+                for(int e = 0; e < numberOfEliteAreas; e++)
                 {
-                    if (i.evaluate() > maxIndex)
+                    areaBee = beeVector[e]; //initialize best bee in the area so far
+                    try
                     {
-                        maxIndex = i.evaluate();
-                        //System.Console.WriteLine(i);
+                        int iterations_e = 0;
+                        for (int i = 0; i < beesInEliteAreas; i++)   //generating beesInEliteAreas bees in neighbourhood
+                        {
+                            tempBee.generate(beeVector[e], sizeOfNeighbourhood);
+                            while (!(tempBee.check_if_allowed()))  //if not allowed generate till allowed
+                            {
+                                tempBee.generate(beeVector[e], sizeOfNeighbourhood);
+                                iterations_e += 1;
+                                if (iterations_e > (max_iterations_multiplier * beesInEliteAreas))
+                                {
+                                    throw new UnableToGenerateAllowed("Unable to generate bees satisfying constraints in elite area.");
+                                }
+                            }
+                            tempBee.evaluate();
+                            if (tempBee.value > areaBee.value)
+                                areaBee = tempBee;
+                        }
                     }
-                }  
-            }
-            */
-            /*
-            int k_dozwolonych = 0;
-            int k_iteracji = 0;
+                    catch (UnableToGenerateAllowed ex)
+                    {
+                        Console.Out.WriteLine("Unable to generate bees satisfying constraints in elite area.");
+                        return -2;
+                    }
+                    beeVector[e] = areaBee; //save best bee in the area
+                }
 
-            while (k_dozwolonych < 2 && k_iteracji < 1000)
-            {
-                k_iteracji += 1;
-                Bee temp = new mmwd.Solver.Bee(this);
-                if (temp.check_if_allowed())
-                    k_dozwolonych += 1;
-                temp.evaluate();
-                Console.Out.Write(k_iteracji + "  ");
-                Console.Out.Write(temp.value + "  ");
-                Console.Out.Write(temp.x_gosci + "  ");
-                Console.Out.Write(temp.x_ciast_o + "  ");
-                Console.Out.Write(temp.x_ciast_d + "  ");
-                Console.Out.Write(temp.x_ciast_u + "  ");
-                Console.Out.Write(temp.x_napojow_o + "  ");
-                Console.Out.Write(temp.x_napojow_d + "  ");
-                Console.Out.Write(temp.x_ozdob_o + "  ");
-                Console.Out.Write(temp.x_ozdob_z + "  ");
-                Console.Out.Write(temp.x_ozdob_d + "  ");
-                Console.Out.Write(temp.x_potraw_z + "  ");
-                Console.Out.Write(temp.x_potraw_d + "\n");
+
+                /////operations on bees in selected areas
+                //for(int s = numberOfEliteAreas; s < (numberOfEliteAreas + numberOfSelectedAreas); s++)
+                     
+
+
+
+
             }
-            */
+
+
+
+
+
 
             return 0;
         }
