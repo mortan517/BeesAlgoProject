@@ -72,6 +72,11 @@ namespace mmwd
             public Bee(Solver parent) //scout constructor
             {
                 this.parent = parent;
+                this.generate();    //in step 0 only scouts are generated
+            }
+
+            public void generate()   //generating a random scout bee
+            {
                 //generating random values of variables
                 //we use knowledge about model to limit space from which numbers are generated
                 x_gosci = parent.rand.Next(0, parent.room + 1);
@@ -85,12 +90,11 @@ namespace mmwd
                 x_ozdob_z = parent.rand.Next(0, 6);
                 x_potraw_z = parent.rand.Next(0, 6);
                 x_potraw_d = parent.rand.Next(0, 6);
-                value = 0; //just to initialize
+                value = -1; //just to initialize
             }
 
-            public Bee(Solver parent, Bee center, int neighbourhood_size)   //bee in elite or selected area constructor
+            public void generate(Bee center, int neighbourhood_size)    //generating a random bee in elite or selected areas
             {
-                this.parent = parent;
                 //generating random values (but not lesser than 0 and not senselessly big) of variables from neighbourhood
                 x_gosci = parent.rand.Next((center.x_gosci - neighbourhood_size >= 0) ? (center.x_gosci - neighbourhood_size) : 0, (center.x_gosci + neighbourhood_size + 1 < parent.room + 1) ? (center.x_gosci + neighbourhood_size + 1) : (parent.room + 1));
                 x_ciast_o = parent.rand.Next((center.x_ciast_o - neighbourhood_size >= 0) ? (center.x_ciast_o - neighbourhood_size) : 0, (center.x_ciast_o + neighbourhood_size + 1 < 6) ? (center.x_ciast_o + neighbourhood_size + 1) : 6);
@@ -103,7 +107,7 @@ namespace mmwd
                 x_ozdob_z = parent.rand.Next((center.x_ozdob_z - neighbourhood_size >= 0) ? (center.x_ozdob_z - neighbourhood_size) : 0, (center.x_ozdob_z + neighbourhood_size + 1 < 6) ? (center.x_ozdob_z + neighbourhood_size + 1) : 6);
                 x_potraw_z = parent.rand.Next((center.x_potraw_z - neighbourhood_size >= 0) ? (center.x_potraw_z - neighbourhood_size) : 0, (center.x_potraw_z + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
                 x_potraw_d = parent.rand.Next((center.x_potraw_d - neighbourhood_size >= 0) ? (center.x_potraw_d - neighbourhood_size) : 0, (center.x_potraw_d + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
-                value = 0; //just to initialize
+                value = -1; //just to initialize
             }
 
             public bool check_if_allowed() //checks if solution is allowed (are constraints satisfied? - 1-yes, 0-no)
