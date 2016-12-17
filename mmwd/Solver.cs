@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace mmwd
 {
@@ -62,7 +62,7 @@ namespace mmwd
             limit_ozdob_d = money / 40;
         }
 
-        class Bee   //class representing a solution
+        class Bee //class representing a solution
         {
             private Solver parent;
             //using names specified in the model
@@ -230,6 +230,25 @@ namespace mmwd
             }
 
             Bee tempBee = new Bee(this); //temporary bee will be useful in following steps
+            Bee areaBee = new mmwd.Solver.Bee(this);
+
+            beeVector = beeVector.OrderByDescending(b => b.value).ToList();
+
+            foreach(Bee b in beeVector)
+            {
+                Console.Out.Write(b.value + "  ");
+                Console.Out.Write(b.x_gosci + "  ");
+                Console.Out.Write(b.x_ciast_o + "  ");
+                Console.Out.Write(b.x_ciast_d + "  ");
+                Console.Out.Write(b.x_ciast_u + "  ");
+                Console.Out.Write(b.x_napojow_o + "  ");
+                Console.Out.Write(b.x_napojow_d + "  ");
+                Console.Out.Write(b.x_ozdob_o + "  ");
+                Console.Out.Write(b.x_ozdob_z + "  ");
+                Console.Out.Write(b.x_ozdob_d + "  ");
+                Console.Out.Write(b.x_potraw_z + "  ");
+                Console.Out.Write(b.x_potraw_d + "\n");
+            }
 
             int algorithmIt = 1;   //start first step of the algorithm
 
