@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 
 namespace mmwd
@@ -165,16 +165,17 @@ namespace mmwd
 
         public int SolvingMethod() //solve and return results //todo //it's fucked
         {
+            /*
             List<Bee> beeVector = new List<Bee>();
             beeVector.Capacity = 50;
-
+            
             for(int i=0; i<50; i++)
             {
                 beeVector.Add(new Bee(this));
                 //
             }
-
-            int maxIndex = 0;
+            
+            int maxIndex = 10;
 
             foreach(var i in beeVector)
             {
@@ -187,8 +188,34 @@ namespace mmwd
                     }
                 }  
             }
+            */
 
-            return maxIndex;
+            int k_dozwolonych = 0;
+            int k_iteracji = 0;
+
+            while (k_dozwolonych < 2 && k_iteracji < 1000)
+            {
+                k_iteracji += 1;
+                Bee temp = new mmwd.Solver.Bee(this);
+                if (temp.check_if_allowed())
+                    k_dozwolonych += 1;
+                temp.evaluate();
+                Console.Out.Write(k_iteracji + "  ");
+                Console.Out.Write(k_dozwolonych + "  ");
+                Console.Out.Write(temp.value + "  ");
+                Console.Out.Write(temp.x_gosci + "  ");
+                Console.Out.Write(temp.x_ciast_o + "  ");
+                Console.Out.Write(temp.x_ciast_d + "  ");
+                Console.Out.Write(temp.x_ciast_u + "  ");
+                Console.Out.Write(temp.x_napojow_o + "  ");
+                Console.Out.Write(temp.x_napojow_d + "  ");
+                Console.Out.Write(temp.x_ozdob_o + "  ");
+                Console.Out.Write(temp.x_ozdob_z + "  ");
+                Console.Out.Write(temp.x_ozdob_d + "  ");
+                Console.Out.Write(temp.x_potraw_z + "  ");
+                Console.Out.Write(temp.x_potraw_d + "\n");
+            }
+            return k_iteracji;
         }
     }
 }
