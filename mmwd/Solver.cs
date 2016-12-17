@@ -264,7 +264,7 @@ namespace mmwd
                     areaBee = beeVector[e]; //initialize best bee in the area so far
                     try
                     {
-                        int iterations_e = 0;
+                        int iterations_e = 0; //max number of iterations while generating random bees in elite area
                         for (int i = 0; i < beesInEliteAreas; i++)   //generating beesInEliteAreas bees in neighbourhood
                         {
                             tempBee.generate(beeVector[e], sizeOfNeighbourhood);
@@ -292,8 +292,41 @@ namespace mmwd
 
 
                 /////operations on bees in selected areas
-                //for(int s = numberOfEliteAreas; s < (numberOfEliteAreas + numberOfSelectedAreas); s++)
-                     
+                for(int s = numberOfEliteAreas; s < (numberOfEliteAreas + numberOfSelectedAreas); s++)
+                {
+                    areaBee = beeVector[s]; //initialize best bee in the area so far
+                    try
+                    {
+                        int iterations_s = 0; //max number of iterations while generating random bees in elite area
+                        for(int i = 0; i < beesInSelectedAreas; i++)
+                        {
+                            tempBee.generate(beeVector[s], sizeOfNeighbourhood);
+                            while(!(tempBee.check_if_allowed())) //generate till allowed
+                            {
+                                tempBee.generate(beeVector[s], sizeOfNeighbourhood);
+                                iterations_s += 1;
+                                if (iterations_s > (max_iterations_multiplier * beesInSelectedAreas))
+                                {
+                                    throw new UnableToGenerateAllowed("Unable to generate bees satisfying constraints in elite area.");
+                                }
+                            }
+                            tempBee.evaluate();
+                            if (tempBee.value > areaBee.value)
+                                areaBee = tempBee;
+                        }
+                    }
+                    catch (UnableToGenerateAllowed ex)
+                    {
+                        Console.Out.WriteLine("Unable to generate bees satisfying constraints in selected area.");
+                        return -3;
+                    }
+                    beeVector[s] = areaBee; //save best bee in the area
+                }
+                
+                
+                /////generating new scout bees     
+
+
 
 
 
