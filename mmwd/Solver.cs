@@ -26,6 +26,13 @@ namespace mmwd
         const int max_iterations_multiplier = 1000; //max number of iterations while generating allowed bee = (bees to generate) * multiplier
         Random rand; //random numbers generator
 
+        //some limits based on mathematical model; trying to generate numbers more effectively
+        int limit_ciast_u;
+        int limit_ozdob_o;
+        int limit_ozdob_z;
+        int limit_ozdob_d;
+        int limit_potraw_z;
+
         public Solver(List<int> userParametersList, List<int> programmerParametersList) //constructor
         {
             people = userParametersList[0];
@@ -46,6 +53,13 @@ namespace mmwd
             iterationsWithoutImprovement = programmerParametersList[6];
 
             rand = new Random();
+
+            //based on mathematical model:
+            limit_ciast_u = time / 70;
+            limit_potraw_z = time / 90;
+            limit_ozdob_z = (time / 50 < money / 15) ? time / 50 : money / 15;
+            limit_ozdob_o = money / 40;
+            limit_ozdob_d = money / 40;
         }
 
         class Bee   //class representing a solution
@@ -83,13 +97,13 @@ namespace mmwd
                 x_gosci = parent.rand.Next(0, parent.people + 1);
                 x_ciast_o = parent.rand.Next(0, 6);
                 x_ciast_d = parent.rand.Next(0, 6);
-                x_ciast_u = parent.rand.Next(0, 6);
+                x_ciast_u = parent.rand.Next(0, parent.limit_ciast_u + 1);
                 x_napojow_o = parent.rand.Next(0, 6);
                 x_napojow_d = parent.rand.Next(0, 6);
-                x_ozdob_o = parent.rand.Next(0, 6);
-                x_ozdob_d = parent.rand.Next(0, 6);
-                x_ozdob_z = parent.rand.Next(0, 6);
-                x_potraw_z = parent.rand.Next(0, 6);
+                x_ozdob_o = parent.rand.Next(0, parent.limit_ozdob_o + 1);
+                x_ozdob_d = parent.rand.Next(0, parent.limit_ozdob_d + 1);
+                x_ozdob_z = parent.rand.Next(0, parent.limit_ozdob_z + 1);
+                x_potraw_z = parent.rand.Next(0, parent.limit_potraw_z + 1);
                 x_potraw_d = parent.rand.Next(0, 6);
                 value = -1; //just to initialize
             }
@@ -100,13 +114,13 @@ namespace mmwd
                 x_gosci = parent.rand.Next((center.x_gosci - neighbourhood_size >= 0) ? (center.x_gosci - neighbourhood_size) : 0, (center.x_gosci + neighbourhood_size + 1 < parent.people + 1) ? (center.x_gosci + neighbourhood_size + 1) : (parent.people + 1));
                 x_ciast_o = parent.rand.Next((center.x_ciast_o - neighbourhood_size >= 0) ? (center.x_ciast_o - neighbourhood_size) : 0, (center.x_ciast_o + neighbourhood_size + 1 < 6) ? (center.x_ciast_o + neighbourhood_size + 1) : 6);
                 x_ciast_d = parent.rand.Next((center.x_ciast_d - neighbourhood_size >= 0) ? (center.x_ciast_d - neighbourhood_size) : 0, (center.x_ciast_d + neighbourhood_size + 1 < 6) ? (center.x_ciast_d + neighbourhood_size + 1) : 6);
-                x_ciast_u = parent.rand.Next((center.x_ciast_u - neighbourhood_size >= 0) ? (center.x_ciast_u - neighbourhood_size) : 0, (center.x_ciast_u + neighbourhood_size + 1 < 6) ? (center.x_ciast_u + neighbourhood_size + 1) : 6);
+                x_ciast_u = parent.rand.Next((center.x_ciast_u - neighbourhood_size >= 0) ? (center.x_ciast_u - neighbourhood_size) : 0, (center.x_ciast_u + neighbourhood_size + 1 < parent.limit_ciast_u + 1) ? (center.x_ciast_u + neighbourhood_size + 1) : (parent.limit_ciast_u + 1));
                 x_napojow_o = parent.rand.Next((center.x_napojow_o - neighbourhood_size >= 0) ? (center.x_napojow_o - neighbourhood_size) : 0, (center.x_napojow_o + neighbourhood_size + 1 < 6) ? (center.x_napojow_o + neighbourhood_size + 1) : 6);
                 x_napojow_d = parent.rand.Next((center.x_napojow_d - neighbourhood_size >= 0) ? (center.x_napojow_d - neighbourhood_size) : 0, (center.x_napojow_d + neighbourhood_size + 1 < 6) ? (center.x_napojow_d + neighbourhood_size + 1) : 6);
-                x_ozdob_o = parent.rand.Next((center.x_ozdob_o - neighbourhood_size >= 0) ? (center.x_ozdob_o - neighbourhood_size) : 0, (center.x_ozdob_o + neighbourhood_size + 1 < 6) ? (center.x_ozdob_o + neighbourhood_size + 1) : 6);
-                x_ozdob_d = parent.rand.Next((center.x_ozdob_d - neighbourhood_size >= 0) ? (center.x_ozdob_d - neighbourhood_size) : 0, (center.x_ozdob_d + neighbourhood_size + 1 < 6) ? (center.x_ozdob_d + neighbourhood_size + 1) : 6);
-                x_ozdob_z = parent.rand.Next((center.x_ozdob_z - neighbourhood_size >= 0) ? (center.x_ozdob_z - neighbourhood_size) : 0, (center.x_ozdob_z + neighbourhood_size + 1 < 6) ? (center.x_ozdob_z + neighbourhood_size + 1) : 6);
-                x_potraw_z = parent.rand.Next((center.x_potraw_z - neighbourhood_size >= 0) ? (center.x_potraw_z - neighbourhood_size) : 0, (center.x_potraw_z + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
+                x_ozdob_o = parent.rand.Next((center.x_ozdob_o - neighbourhood_size >= 0) ? (center.x_ozdob_o - neighbourhood_size) : 0, (center.x_ozdob_o + neighbourhood_size + 1 < parent.limit_ozdob_o + 1) ? (center.x_ozdob_o + neighbourhood_size + 1) : (parent.limit_ozdob_o + 1));
+                x_ozdob_d = parent.rand.Next((center.x_ozdob_d - neighbourhood_size >= 0) ? (center.x_ozdob_d - neighbourhood_size) : 0, (center.x_ozdob_d + neighbourhood_size + 1 < parent.limit_ozdob_d + 1) ? (center.x_ozdob_d + neighbourhood_size + 1) : (parent.limit_ozdob_d + 1));
+                x_ozdob_z = parent.rand.Next((center.x_ozdob_z - neighbourhood_size >= 0) ? (center.x_ozdob_z - neighbourhood_size) : 0, (center.x_ozdob_z + neighbourhood_size + 1 < parent.limit_ozdob_z + 1) ? (center.x_ozdob_z + neighbourhood_size + 1) : (parent.limit_ozdob_z + 1));
+                x_potraw_z = parent.rand.Next((center.x_potraw_z - neighbourhood_size >= 0) ? (center.x_potraw_z - neighbourhood_size) : 0, (center.x_potraw_z + neighbourhood_size + 1 < parent.limit_potraw_z + 1) ? (center.x_potraw_z + neighbourhood_size + 1) : (parent.limit_potraw_z + 1));
                 x_potraw_d = parent.rand.Next((center.x_potraw_d - neighbourhood_size >= 0) ? (center.x_potraw_d - neighbourhood_size) : 0, (center.x_potraw_d + neighbourhood_size + 1 < 6) ? (center.x_potraw_z + neighbourhood_size + 1) : 6);
                 value = -1; //just to initialize
             }
