@@ -322,9 +322,32 @@ namespace mmwd
                     }
                     beeVector[s] = areaBee; //save best bee in the area
                 }
-                
-                
+
+
                 /////generating new scout bees     
+                try
+                {
+                    int iterations_0 = 0; //number of iterations while trying to generate allowed beeVector
+                    for (int i = (numberOfEliteAreas + numberOfSelectedAreas); i < (numberOfEliteAreas + numberOfSelectedAreas + numberOfScouts); i++)
+                    {
+                        beeVector[i].generate();
+                        while (!(beeVector[i].check_if_allowed()))  //if not allowed generate till allowed
+                        {
+                            beeVector[i].generate();
+                            iterations_0 += 1;
+                            if (iterations_0 > (max_iterations_multiplier * numberOfScouts))
+                            {
+                                throw new UnableToGenerateAllowed("Unable to generate bees satisfying constraints");
+                            }
+                        }
+                        beeVector[i].evaluate();
+                    }
+                }
+                catch (UnableToGenerateAllowed ex)
+                {
+                    Console.Out.WriteLine("Unable to generate new scout bees satisfying constraints");
+                    return -4;
+                }
 
 
 
