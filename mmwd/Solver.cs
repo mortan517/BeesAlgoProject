@@ -125,9 +125,6 @@ namespace mmwd
                 x_ozdob_d = parent.rand.Next((center.x_ozdob_d - neighbourhood_size >= 0) ? (center.x_ozdob_d - neighbourhood_size) : 0, (center.x_ozdob_d + neighbourhood_size + 1 < parent.limit_ozdob_d + 1) ? (center.x_ozdob_d + neighbourhood_size + 1) : (parent.limit_ozdob_d + 1));
                 x_ozdob_z = parent.rand.Next((center.x_ozdob_z - neighbourhood_size >= 0) ? (center.x_ozdob_z - neighbourhood_size) : 0, (center.x_ozdob_z + neighbourhood_size + 1 < parent.limit_ozdob_z + 1) ? (center.x_ozdob_z + neighbourhood_size + 1) : (parent.limit_ozdob_z + 1));
                 x_potraw_z = parent.rand.Next((center.x_potraw_z - neighbourhood_size >= 0) ? (center.x_potraw_z - neighbourhood_size) : 0, (center.x_potraw_z + neighbourhood_size + 1 < parent.limit_potraw_z + 1) ? (center.x_potraw_z + neighbourhood_size + 1) : (parent.limit_potraw_z + 1));
-                //Console.Out.WriteLine(center.x_potraw_d - neighbourhood_size);
-                //Console.Out.WriteLine(center.x_potraw_d + neighbourhood_size + 1);
-                //Console.Out.WriteLine();
                 x_potraw_d = parent.rand.Next((center.x_potraw_d - neighbourhood_size >= 0) ? (center.x_potraw_d - neighbourhood_size) : 0, (center.x_potraw_d + neighbourhood_size + 1 < 6) ? (center.x_potraw_d + neighbourhood_size + 1) : 6);
                 value = -1; //just to initialize
             }
@@ -186,6 +183,22 @@ namespace mmwd
                     default:
                         return 15;
                 }
+            }
+
+            public void copy(Bee obj)
+            {
+                this.x_gosci = obj.x_gosci;
+                this.x_ciast_o = obj.x_ciast_o;
+                this.x_ciast_d = obj.x_ciast_d;
+                this.x_ciast_u = obj.x_ciast_u;
+                this.x_napojow_o = obj.x_napojow_o;
+                this.x_napojow_d = obj.x_napojow_d;
+                this.x_ozdob_o = obj.x_ozdob_o;
+                this.x_ozdob_z = obj.x_ozdob_z;
+                this.x_ozdob_d = obj.x_ozdob_d;
+                this.x_potraw_z = obj.x_potraw_z;
+                this.x_potraw_d = obj.x_potraw_d;
+                this.value = obj.value;
             }
         }
 
@@ -273,7 +286,7 @@ namespace mmwd
                 /////operations on bees in elite areas:
                 for(int e = 0; e < numberOfEliteAreas; e++)
                 {
-                    areaBee = beeVector[e]; //initialize best bee in the area so far
+                    areaBee.copy(beeVector[e]); //initialize best bee in the area so far
                     try
                     {
                         int iterations_e = 0; //max number of iterations while generating random bees in elite area
@@ -291,7 +304,7 @@ namespace mmwd
                             }
                             tempBee.evaluate();
                             if (tempBee.value > areaBee.value)
-                                areaBee = tempBee;
+                                areaBee.copy(tempBee);
                         }
                     }
                     catch (UnableToGenerateAllowed ex)
@@ -299,14 +312,14 @@ namespace mmwd
                         Console.Out.WriteLine("Unable to generate bees satisfying constraints in elite area.");
                         return -2;
                     }
-                    beeVector[e] = areaBee; //save best bee in the area
+                    beeVector[e].copy(areaBee); //save best bee in the area
                 }
                 
 
                 /////operations on bees in selected areas
                 for(int s = numberOfEliteAreas; s < (numberOfEliteAreas + numberOfSelectedAreas); s++)
                 {
-                    areaBee = beeVector[s]; //initialize best bee in the area so far
+                    areaBee.copy(beeVector[s]); //initialize best bee in the area so far
                     try
                     {
                         int iterations_s = 0; //max number of iterations while generating random bees in elite area
@@ -324,7 +337,7 @@ namespace mmwd
                             }
                             tempBee.evaluate();
                             if (tempBee.value > areaBee.value)
-                                areaBee = tempBee;
+                                areaBee.copy(tempBee);
                         }
                     }
                     catch (UnableToGenerateAllowed ex)
@@ -332,7 +345,7 @@ namespace mmwd
                         Console.Out.WriteLine("Unable to generate bees satisfying constraints in selected area.");
                         return -3;
                     }
-                    beeVector[s] = areaBee; //save best bee in the area
+                    beeVector[s].copy(areaBee); //save best bee in the area
                 }
                 
 
@@ -369,7 +382,7 @@ namespace mmwd
                 else
                     nowWithoutImprovement = 0;
 
-
+                /*
                 foreach (Bee b in beeVector)
                 {
                     Console.Out.Write(b.value + "  ");
@@ -391,6 +404,7 @@ namespace mmwd
                 Console.Out.WriteLine();
                 Console.Out.WriteLine();
                 Console.Out.WriteLine();
+                */
             }
 
             return beeVector[0].value;
