@@ -62,12 +62,38 @@ namespace mmwd
                 List<int> programmerParametersList = hiddenInterface.GetValuesFromProgrammerInterface(); //2
 
                 solver = new Solver(userParametersList, programmerParametersList, ref MainChart); //3
-                    //transfer parameters from Programer & User Interface to Solver
+                    //transfer parameters from Programer & User Interface and Chart to Solver
                 MainChart.Series["Series1"].Points.Clear();
-                int test = solver.SolvingMethod();//testy / get results //4
-                //MainChart.Series.Add("Ser1");
-                //MainChart.Series["Ser1"].Points.AddY(20);
-                System.Windows.Forms.MessageBox.Show(test.ToString()); //get and show results //5
+                var solution = solver.SolvingMethod(); // get results //4
+
+                string[] tab = new string[] { "Wartość funkcji celu: ",
+                                              "Liczba iteracji: ",
+                                              "Ciasta dostarczone: ",
+                                              "Ciasta odebrane: ",
+                                              "Ciasta upieczone: ",
+                                              "Liczba gości: ",
+                                              "Napoje dostarczone: ",
+                                              "Napoje odebrane: ",
+                                              "Ozdoby dostarczone: ",
+                                              "Ozdoby odebrane: ",
+                                              "Ozdoby zrobione: ",
+                                              "Potrawy dostarczone: ",
+                                              "Potrawy zrobione: "};
+
+                string tempString;
+                tempString = "";
+
+                for (int i = 0; i < solution.Count; i++)
+                {
+                    tempString += tab[i];
+                    tempString += solution[i].ToString();
+                    tempString += '\n';
+
+                    if (1 == i)
+                        tempString += '\n';
+                }
+                System.Windows.Forms.MessageBox.Show(tempString); //show results //5
+
             }
             else
             {

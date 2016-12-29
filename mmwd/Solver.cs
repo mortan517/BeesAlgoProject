@@ -25,7 +25,7 @@ namespace mmwd
         int iterationsWithoutImprovement;
         int sizeOfNeighbourhood;
 
-        System.Windows.Forms.DataVisualization.Charting.Chart myChart;
+        //System.Windows.Forms.DataVisualization.Charting.Chart myChart;
 
         const int max_iterations_multiplier = 1000; //max number of iterations while generating allowed bee = (bees to generate) * multiplier
         Random rand; //random numbers generator
@@ -211,7 +211,7 @@ namespace mmwd
             }
         }
 
-        public int SolvingMethod() //solve and return results
+        public List<int> SolvingMethod() //solve and return results
         {
             /////////////////////// step 0  - initialization/////////////////////////////////
             //UserInterface.MainChart.Series.Add("ssss");
@@ -256,7 +256,7 @@ namespace mmwd
             catch (UnableToGenerateAllowed ex)
             {
                 Console.Out.WriteLine("Unable to generate bees satisfying constraints");
-                return -1;
+                return new List<int>() { -1 };
             }
 
             Bee tempBee = new Bee(this); //temporary bee will be useful in following steps
@@ -265,7 +265,7 @@ namespace mmwd
             int nowWithoutImprovement = 0;  //to count iterations without improvement
 
             beeVector = beeVector.OrderByDescending(b => b.value).ToList();
-            
+
             /*
             foreach(Bee b in beeVector)
             {
@@ -285,8 +285,8 @@ namespace mmwd
             */
 
             /////////////////////////////// step k -- iteration of the algorithm /////////////////////////
-
-            for (int algorithmIt = 1; algorithmIt <= numberOfIterations; algorithmIt++) //1 of 2 alternative STOP criteria -- max number of iterations
+            int algorithmIt;
+            for (algorithmIt = 1; algorithmIt <= numberOfIterations; algorithmIt++) //1 of 2 alternative STOP criteria -- max number of iterations
             {
                 
 
@@ -322,7 +322,7 @@ namespace mmwd
                     catch (UnableToGenerateAllowed ex)
                     {
                         Console.Out.WriteLine("Unable to generate bees satisfying constraints in elite area.");
-                        return -2;
+                        return new List<int>() { -2 };
                     }
                     beeVector[e].copy(areaBee); //save best bee in the area
                 }
@@ -355,7 +355,7 @@ namespace mmwd
                     catch (UnableToGenerateAllowed ex)
                     {
                         Console.Out.WriteLine("Unable to generate bees satisfying constraints in selected area.");
-                        return -3;
+                        return new List<int>() { -3 };
                     }
                     beeVector[s].copy(areaBee); //save best bee in the area
                 }
@@ -384,7 +384,7 @@ namespace mmwd
                 catch (UnableToGenerateAllowed ex)
                 {
                     Console.Out.WriteLine("Unable to generate new scout bees satisfying constraints");
-                    return -4;
+                    return new List<int>() { -4 };
                 }
 
 
@@ -428,7 +428,12 @@ namespace mmwd
 
             }
 
-            return beeVector[0].value;
+            return new List<int>() { beeVector[0].value, algorithmIt,
+                                     beeVector[0].x_ciast_d, beeVector[0].x_ciast_o, beeVector[0].x_ciast_u,
+                                     beeVector[0].x_gosci, beeVector[0].x_napojow_d, beeVector[0].x_napojow_o,
+                                     beeVector[0].x_ozdob_d, beeVector[0].x_ozdob_o, beeVector[0].x_ozdob_z,
+                                     beeVector[0].x_potraw_d, beeVector[0].x_potraw_z};
+            //return beeVector[0].value;
         }
     }
 
