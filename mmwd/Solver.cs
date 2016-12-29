@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace mmwd
 {
@@ -24,6 +25,8 @@ namespace mmwd
         int iterationsWithoutImprovement;
         int sizeOfNeighbourhood;
 
+        System.Windows.Forms.DataVisualization.Charting.Chart myChart;
+
         const int max_iterations_multiplier = 1000; //max number of iterations while generating allowed bee = (bees to generate) * multiplier
         Random rand; //random numbers generator
 
@@ -33,6 +36,7 @@ namespace mmwd
         int limit_ozdob_z;
         int limit_ozdob_d;
         int limit_potraw_z;
+        private Chart mainChart;
 
         public Solver(List<int> userParametersList, List<int> programmerParametersList) //constructor
         {
@@ -64,6 +68,11 @@ namespace mmwd
                 limit_ozdob_z = 6;
             limit_ozdob_o = (money / 40 < 6) ? (money / 40) : 6;
             limit_ozdob_d = (money / 40 < 6) ? (money / 40) : 6;
+        }
+
+        public Solver(List<int> userParametersList, List<int> programmerParametersList, ref Chart mainChart) : this(userParametersList, programmerParametersList)
+        {
+            this.mainChart = mainChart;
         }
 
         class Bee //class representing a solution
@@ -205,7 +214,7 @@ namespace mmwd
         public int SolvingMethod() //solve and return results
         {
             /////////////////////// step 0  - initialization/////////////////////////////////
-
+            //UserInterface.MainChart.Series.Add("ssss");
             //generating n_elite_areas + n_selected_areas + n_scouts
             List<Bee> beeVector = new List<Bee>();
             beeVector.Capacity = numberOfEliteAreas + numberOfSelectedAreas + numberOfScouts;
@@ -241,6 +250,7 @@ namespace mmwd
                     Console.Out.Write(beeVector[i].x_potraw_z + "  ");
                     Console.Out.Write(beeVector[i].x_potraw_d + "\n");
                     */
+                    
                 }
             }
             catch (UnableToGenerateAllowed ex)
@@ -255,7 +265,7 @@ namespace mmwd
             int nowWithoutImprovement = 0;  //to count iterations without improvement
 
             beeVector = beeVector.OrderByDescending(b => b.value).ToList();
-
+            
             /*
             foreach(Bee b in beeVector)
             {
@@ -278,6 +288,8 @@ namespace mmwd
 
             for (int algorithmIt = 1; algorithmIt <= numberOfIterations; algorithmIt++) //1 of 2 alternative STOP criteria -- max number of iterations
             {
+                
+
                 if (nowWithoutImprovement > iterationsWithoutImprovement) //second STOP criteria -- max number of iterations without improvement
                     break;
 
@@ -355,6 +367,7 @@ namespace mmwd
                     int iterations_0 = 0; //number of iterations while trying to generate allowed beeVector
                     for (int i = (numberOfEliteAreas + numberOfSelectedAreas); i < (numberOfEliteAreas + numberOfSelectedAreas + numberOfScouts); i++)
                     {
+                        
                         beeVector[i].generate();
                         while (!(beeVector[i].check_if_allowed()))  //if not allowed generate till allowed
                         {
@@ -405,6 +418,14 @@ namespace mmwd
                 Console.Out.WriteLine();
                 Console.Out.WriteLine();
                 */
+
+                //tests
+
+                mainChart.ChartAreas[0].AxisX.Minimum = 0;
+                mainChart.Series["Series1"].Points.AddXY(algorithmIt, beeVector[0].value);
+                mainChart.Update();
+                //tests
+
             }
 
             return beeVector[0].value;

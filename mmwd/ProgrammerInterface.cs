@@ -25,7 +25,21 @@ namespace mmwd
             InitializeComponent();
             this.ControlBox = false; // hiding mini,maxi,exit
             //set init values
-            //set values on boxes in programmer interface even if not clicked
+            NumberOfIterationsBox.Text = "1000";
+            NumbersOfScoutsBox.Text = "50";
+            NumbersOfEliteAreasBox.Text = "25";
+            NumbersOfSelectedAreasBox.Text = "15";
+            BeesInEliteAreasBox.Text = "10";
+            BeesInSelectedAreasBox.Text = "15";
+            IterationsWithoutImprovementBox.Text = "200";
+
+            numbersOfIterations = Int32.Parse(NumberOfIterationsBox.Text);
+            numbersOfScouts = Int32.Parse(NumbersOfScoutsBox.Text);
+            numbersOfEliteAreas = Int32.Parse(NumbersOfEliteAreasBox.Text);
+            numbersOfSelectedAreas = Int32.Parse(NumbersOfSelectedAreasBox.Text);
+            beesInEliteAreas = Int32.Parse(BeesInEliteAreasBox.Text);
+            beesInSelectedAreas = Int32.Parse(BeesInSelectedAreasBox.Text);
+            iterationsWithoutImprovement = Int32.Parse(IterationsWithoutImprovementBox.Text);
         }
 
         private void ClosingButton_Click(object sender, EventArgs e) // get values from interface to implementation

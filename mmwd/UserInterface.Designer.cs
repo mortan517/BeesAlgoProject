@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserInterface));
             this.roomText = new System.Windows.Forms.TextBox();
             this.buttonOpenProgrammerInterface = new System.Windows.Forms.Button();
             this.cakesText = new System.Windows.Forms.TextBox();
             this.foodText = new System.Windows.Forms.TextBox();
             this.beveragesText = new System.Windows.Forms.TextBox();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.StartButton = new System.Windows.Forms.Button();
             this.password = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,18 +49,20 @@
             this.moneyText = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.timeText = new System.Windows.Forms.TextBox();
+            this.MainChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            ((System.ComponentModel.ISupportInitialize)(this.MainChart)).BeginInit();
             this.SuspendLayout();
             // 
             // roomText
             // 
-            this.roomText.Location = new System.Drawing.Point(413, 232);
+            this.roomText.Location = new System.Drawing.Point(413, 183);
             this.roomText.Name = "roomText";
             this.roomText.Size = new System.Drawing.Size(100, 20);
             this.roomText.TabIndex = 0;
             // 
             // buttonOpenProgrammerInterface
             // 
-            this.buttonOpenProgrammerInterface.Location = new System.Drawing.Point(598, 274);
+            this.buttonOpenProgrammerInterface.Location = new System.Drawing.Point(598, 210);
             this.buttonOpenProgrammerInterface.Name = "buttonOpenProgrammerInterface";
             this.buttonOpenProgrammerInterface.Size = new System.Drawing.Size(100, 39);
             this.buttonOpenProgrammerInterface.TabIndex = 1;
@@ -68,37 +72,30 @@
             // 
             // cakesText
             // 
-            this.cakesText.Location = new System.Drawing.Point(413, 258);
+            this.cakesText.Location = new System.Drawing.Point(413, 209);
             this.cakesText.Name = "cakesText";
             this.cakesText.Size = new System.Drawing.Size(100, 20);
             this.cakesText.TabIndex = 5;
             // 
             // foodText
             // 
-            this.foodText.Location = new System.Drawing.Point(413, 284);
+            this.foodText.Location = new System.Drawing.Point(413, 235);
             this.foodText.Name = "foodText";
             this.foodText.Size = new System.Drawing.Size(100, 20);
             this.foodText.TabIndex = 6;
             // 
             // beveragesText
             // 
-            this.beveragesText.Location = new System.Drawing.Point(413, 310);
+            this.beveragesText.Location = new System.Drawing.Point(413, 261);
             this.beveragesText.Name = "beveragesText";
             this.beveragesText.Size = new System.Drawing.Size(100, 20);
             this.beveragesText.TabIndex = 7;
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(455, 429);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(243, 38);
-            this.progressBar1.TabIndex = 8;
-            // 
             // StartButton
             // 
-            this.StartButton.Location = new System.Drawing.Point(293, 464);
+            this.StartButton.Location = new System.Drawing.Point(598, 255);
             this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(75, 23);
+            this.StartButton.Size = new System.Drawing.Size(100, 26);
             this.StartButton.TabIndex = 14;
             this.StartButton.Text = "Start!";
             this.StartButton.UseVisualStyleBackColor = true;
@@ -106,7 +103,7 @@
             // 
             // password
             // 
-            this.password.Location = new System.Drawing.Point(598, 242);
+            this.password.Location = new System.Drawing.Point(598, 184);
             this.password.Name = "password";
             this.password.Size = new System.Drawing.Size(100, 20);
             this.password.TabIndex = 15;
@@ -116,7 +113,7 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Modern No. 20", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(286, 234);
+            this.label1.Location = new System.Drawing.Point(286, 185);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 16);
             this.label1.TabIndex = 16;
@@ -127,7 +124,7 @@
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Modern No. 20", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label2.Location = new System.Drawing.Point(286, 260);
+            this.label2.Location = new System.Drawing.Point(286, 211);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(82, 16);
             this.label2.TabIndex = 17;
@@ -138,7 +135,7 @@
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Modern No. 20", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label3.Location = new System.Drawing.Point(286, 286);
+            this.label3.Location = new System.Drawing.Point(286, 237);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(108, 16);
             this.label3.TabIndex = 18;
@@ -149,7 +146,7 @@
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Modern No. 20", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.Location = new System.Drawing.Point(286, 312);
+            this.label4.Location = new System.Drawing.Point(286, 263);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(108, 16);
             this.label4.TabIndex = 19;
@@ -209,6 +206,25 @@
             this.timeText.Size = new System.Drawing.Size(100, 20);
             this.timeText.TabIndex = 25;
             // 
+            // MainChart
+            // 
+            this.MainChart.AccessibleName = "MainChart";
+            chartArea1.Name = "ChartArea1";
+            this.MainChart.ChartAreas.Add(chartArea1);
+            legend1.Enabled = false;
+            legend1.Name = "Legend1";
+            this.MainChart.Legends.Add(legend1);
+            this.MainChart.Location = new System.Drawing.Point(289, 320);
+            this.MainChart.Name = "MainChart";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.MainChart.Series.Add(series1);
+            this.MainChart.Size = new System.Drawing.Size(454, 177);
+            this.MainChart.TabIndex = 26;
+            this.MainChart.Text = "chart1";
+            // 
             // UserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -216,6 +232,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(784, 527);
+            this.Controls.Add(this.MainChart);
             this.Controls.Add(this.timeText);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.moneyText);
@@ -228,7 +245,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.password);
             this.Controls.Add(this.StartButton);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.beveragesText);
             this.Controls.Add(this.foodText);
             this.Controls.Add(this.cakesText);
@@ -240,6 +256,7 @@
             this.MinimumSize = new System.Drawing.Size(800, 566);
             this.Name = "UserInterface";
             this.Text = "Przyjęcie - interfejs użytkownika";
+            ((System.ComponentModel.ISupportInitialize)(this.MainChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,7 +269,6 @@
         private System.Windows.Forms.TextBox beveragesText;
         private System.Windows.Forms.TextBox foodText;
         private System.Windows.Forms.TextBox cakesText;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button StartButton;
         private System.Windows.Forms.TextBox password;
         private System.Windows.Forms.Label label4;
@@ -265,6 +281,7 @@
         private System.Windows.Forms.TextBox moneyText;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox peopleText;
+        private System.Windows.Forms.DataVisualization.Charting.Chart MainChart;
     }
 }
 

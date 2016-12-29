@@ -15,6 +15,8 @@ namespace mmwd
     {
         ProgrammerInterface hiddenInterface; // programmer interface
         Solver solver; // solver
+        //System.Windows.Forms.DataVisualization.Charting.Chart myChart;
+        
 
         int people; // how many people do u want to accomodate
         int money; // how much money do u have
@@ -52,15 +54,19 @@ namespace mmwd
                 cakes = Int32.Parse(cakesText.Text);
                 food = Int32.Parse(foodText.Text);
                 beverages = Int32.Parse(beveragesText.Text);
+                
 
                 //this.Update();//not necessary
 
                 List<int> userParametersList = new List<int>() { people, money, time, room, cakes, food, beverages }; //1
                 List<int> programmerParametersList = hiddenInterface.GetValuesFromProgrammerInterface(); //2
 
-                solver = new Solver(userParametersList, programmerParametersList); //3
+                solver = new Solver(userParametersList, programmerParametersList, ref MainChart); //3
                     //transfer parameters from Programer & User Interface to Solver
+                MainChart.Series["Series1"].Points.Clear();
                 int test = solver.SolvingMethod();//testy / get results //4
+                //MainChart.Series.Add("Ser1");
+                //MainChart.Series["Ser1"].Points.AddY(20);
                 System.Windows.Forms.MessageBox.Show(test.ToString()); //get and show results //5
             }
             else
