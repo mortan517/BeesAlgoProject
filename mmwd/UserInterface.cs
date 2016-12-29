@@ -80,19 +80,31 @@ namespace mmwd
                                               "Potrawy dostarczone: ",
                                               "Potrawy zrobione: "};
 
-                string tempString;
-                tempString = "";
-
-                for (int i = 0; i < solution.Count; i++)
+                //show results //5
+                if (-1 == solution[0])
+                    System.Windows.Forms.MessageBox.Show("Brak najlepszego rozwiązania (inicjalizacja początkowa)");
+                else if (-2 == solution[0])
+                    System.Windows.Forms.MessageBox.Show("Brak najlepszego rozwiązania (obszary elitarne)");
+                else if (-3 == solution[0])
+                    System.Windows.Forms.MessageBox.Show("Brak najlepszego rozwiązania (obszary wybrane)");
+                else if (-4 == solution[0])
+                    System.Windows.Forms.MessageBox.Show("Brak najlepszego rozwiązania (skauci)");
+                else
                 {
-                    tempString += tab[i];
-                    tempString += solution[i].ToString();
-                    tempString += '\n';
+                    string tempString;
+                    tempString = "";
 
-                    if (1 == i)
+                    for (int i = 0; i < solution.Count; i++)
+                    {
+                        tempString += tab[i];
+                        tempString += solution[i].ToString();
                         tempString += '\n';
+
+                        if (1 == i)
+                            tempString += '\n';
+                    }
+                    System.Windows.Forms.MessageBox.Show(tempString);
                 }
-                System.Windows.Forms.MessageBox.Show(tempString); //show results //5
 
             }
             else
